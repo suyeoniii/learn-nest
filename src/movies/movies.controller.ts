@@ -1,3 +1,6 @@
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { Movie } from './entities/movie.entity.';
+import { MoviesService } from './movies.service';
 import {
   Body,
   Controller,
@@ -11,9 +14,11 @@ import {
 
 @Controller('movies')
 export class MoviesController {
+  constructor(private readonly moviesService: MoviesService) {}
+
   @Get()
-  getAll() {
-    return 'Hello';
+  getAll(): Movie[] {
+    return this.moviesService.getAll();
   }
 
   @Get('search')
@@ -23,25 +28,21 @@ export class MoviesController {
 
   @Get('/:id')
   getOne(@Param('id') id: string) {
-    return `This will return ${id}`;
+    return this.moviesService.getOne(id);
   }
 
   @Post()
-  create(@Body() movieData) {
-    console.log(movieData);
-    return 'This will return create a movie';
+  create(@Body() movieData: CreateMovieDto) {
+    return this.moviesService.create(movieData);
   }
 
   @Delete('/:id')
   remove(@Param('id') id: string) {
-    return `This will delete ${id}`;
+    return this.moviesService.deleteOne(id);
   }
 
   @Patch('/:id')
   patch(@Param('id') id: string, @Body() updateData) {
-    return {
-      updatedMovie: id,
-      ...updateData,
-    };
+    return this.moviesService.update(id, updateData);
   }
 }
